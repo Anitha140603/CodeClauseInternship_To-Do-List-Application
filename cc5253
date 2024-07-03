@@ -1,0 +1,134 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class TodoListApp {
+    public static void main(String[] args) {
+        TodoList todoList = new TodoList();
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+
+        while (!exit) {
+            printMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+            
+            switch (choice) {
+                case 1:
+                    addTask(todoList, scanner);
+                    break;
+                case 2:
+                    editTask(todoList, scanner);
+                    break;
+                case 3:
+                    deleteTask(todoList, scanner);
+                    break;
+                case 4:
+                    todoList.displayTasks();
+                    break;
+                case 5:
+                    exit = true;
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                    break;
+            }
+        }
+        
+        scanner.close();
+    }
+
+    private static void printMenu() {
+        System.out.println("=== To-Do List Menu ===");
+        System.out.println("1. Add Task");
+        System.out.println("2. Edit Task");
+        System.out.println("3. Delete Task");
+        System.out.println("4. View Tasks");
+        System.out.println("5. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void addTask(TodoList todoList, Scanner scanner) {
+        System.out.print("Enter task description: ");
+        String description = scanner.nextLine();
+        Task newTask = new Task(description);
+        todoList.addTask(newTask);
+        System.out.println("Task added successfully.");
+        System.out.println();
+    }
+
+    private static void editTask(TodoList todoList, Scanner scanner) {
+        todoList.displayTasks();
+        System.out.print("Enter task number to edit: ");
+        int index = scanner.nextInt();
+        scanner.nextLine(); // Consume newline character
+        System.out.print("Enter new description: ");
+        String newDescription = scanner.nextLine();
+        todoList.editTask(index - 1, newDescription);
+        System.out.println("Task edited successfully.");
+        System.out.println();
+    }
+
+    private static void deleteTask(TodoList todoList, Scanner scanner) {
+        todoList.displayTasks();
+        System.out.print("Enter task number to delete: ");
+        int index = scanner.nextInt();
+        scanner.nextLine(); // Consume newline character
+        todoList.deleteTask(index - 1);
+        System.out.println("Task deleted successfully.");
+        System.out.println();
+    }
+}
+
+class Task {
+    private String description;
+
+    public Task(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+}
+
+class TodoList {
+    private List<Task> tasks;
+
+    public TodoList() {
+        tasks = new ArrayList<>();
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+    }
+
+    public void editTask(int index, String newDescription) {
+        if (index >= 0 && index < tasks.size()) {
+            tasks.get(index).setDescription(newDescription);
+        } else {
+            System.out.println("Invalid task index.");
+        }
+    }
+
+    public void deleteTask(int index) {
+        if (index >= 0 && index < tasks.size()) {
+            tasks.remove(index);
+        } else {
+            System.out.println("Invalid task index.");
+        }
+    }
+
+    public void displayTasks() {
+        System.out.println("Tasks:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + ". " + tasks.get(i).getDescription());
+        }
+        System.out.println();
+    }
+}
